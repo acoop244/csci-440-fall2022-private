@@ -14,7 +14,10 @@ public class Homework1 extends DBTest {
      * Write a query in the string below that returns all artists that have an 'A' in their name
      */
     void selectArtistsWhoseNameHasAnAInIt(){
-        List<Map<String, Object>> results = executeSQL("SELECT * FROM artists");
+        List<Map<String, Object>> results = executeSQL(
+                "SELECT name\n" +
+                "FROM artists\n" +
+                "WHERE name LIKE \"%A%\"");
         assertEquals(211, results.size());
     }
 
@@ -24,7 +27,13 @@ public class Homework1 extends DBTest {
      */
     void selectAllArtistsWithMoreThanOneAlbum(){
         List<Map<String, Object>> results = executeSQL(
-                "SELECT * FROM artists");
+                "SELECT name\n" +
+                        "FROM artists\n" +
+                        "WHERE artists.ArtistId in (SELECT ArtistId\n" +
+                        "                          FROM (SELECT ArtistId, count(*) AS AlbumCount\n" +
+                        "                                FROM albums\n" +
+                        "                                GROUP BY ArtistId)\n" +
+                        "                          WHERE AlbumCount > 1)");
 
         assertEquals(56, results.size());
         assertEquals("AC/DC", results.get(0).get("Name"));
@@ -37,8 +46,11 @@ public class Homework1 extends DBTest {
          */
     void selectTheTrackAndAlbumAndArtistForAllTracksLongerThanSixMinutes() {
         List<Map<String, Object>> results = executeSQL(
-                "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName FROM tracks " +
-                        "-- NEED TO DO SOME JOINS HERE KIDS");
+                "SELECT tracks.Name as TrackName, albums.Title as AlbumTitle, artists.Name as ArtistsName\n" +
+                        "FROM tracks\n" +
+                        "JOIN albums on tracks.AlbumId = albums.AlbumId\n" +
+                        "JOIN artists on albums.ArtistId = artists.ArtistId\n" +
+                        "WHERE Milliseconds > 60 * 6 * 1000");
 
         assertEquals(623, results.size());
 
