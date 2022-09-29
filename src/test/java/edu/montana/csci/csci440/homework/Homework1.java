@@ -58,13 +58,13 @@ public class Homework1 extends DBTest {
         // to ORDER BY
         //
         //
-//        assertEquals("Princess of the Dawn", results.get(0).get("TrackName"));
-//        assertEquals("Restless and Wild", results.get(0).get("AlbumTitle"));
-//        assertEquals("Accept", results.get(0).get("ArtistsName"));
+        assertEquals("Princess of the Dawn", results.get(0).get("TrackName"));
+        assertEquals("Restless and Wild", results.get(0).get("AlbumTitle"));
+        assertEquals("Accept", results.get(0).get("ArtistsName"));
 //
-//        assertEquals("Snoopy's search-Red baron", results.get(10).get("TrackName"));
-//        assertEquals("The Best Of Billy Cobham", results.get(10).get("AlbumTitle"));
-//        assertEquals("Billy Cobham", results.get(10).get("ArtistsName"));
+        assertEquals("Snoopy's search-Red baron", results.get(10).get("TrackName"));
+        assertEquals("The Best Of Billy Cobham", results.get(10).get("AlbumTitle"));
+        assertEquals("Billy Cobham", results.get(10).get("ArtistsName"));
 
     }
 
