@@ -32,17 +32,28 @@ public class Homework2 extends DBTest {
 
     @Test
     /*
-     * Create a table grammy_infos to track grammy information for an artist.  The table should include
-     * a reference to the artist, the album (if the grammy was for an album) and the song (if the grammy was
-     * for a song).  There should be a string column indicating if the artist was nominated or won.  Finally,
-     * there should be a reference to the grammy_category table
+     * Create a table grammy_infos to track grammy information for an artist.
+     * The table should include a reference to the artist,
+     * the album (if the grammy was for an album),
+     * and the song (if the grammy was for a song).
+     * There should be a string column indicating if the artist was nominated or won.
+     * Finally,there should be a reference to the grammy_category table
      *
      * Create a table grammy_category
      */
     public void createGrammyInfoTable(){
         //TODO fill these in
-        executeDDL("create table grammy_categories");
-        executeDDL("create table grammy_infos");
+        executeDDL("CREATE TABLE grammy_categories(\n" +
+                "    Name VARCHAR(255),\n" +
+                "    GrammyCategoryId INTEGER NOT NULL PRIMARY KEY \n" +
+                ");");
+        executeDDL("CREATE TABLE grammy_infos(\n" +
+                "    ArtistId INTEGER REFERENCES artists,\n" +
+                "    AlbumId INTEGER REFERENCES albums,\n" +
+                "    TrackId INTEGER REFERENCES tracks,\n" +
+                "    Status VARCHAR(255),\n" +
+                "    GrammyCategoryId INTEGER REFERENCES grammy_categories\n" +
+                ");");
 
         // TEST CODE
         executeUpdate("INSERT INTO grammy_categories(Name) VALUES ('Greatest Ever');");
