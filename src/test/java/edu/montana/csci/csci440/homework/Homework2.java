@@ -77,7 +77,13 @@ public class Homework2 extends DBTest {
         Integer before = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
 
         //TODO fill this in
-        executeUpdate("INSERT");
+        executeUpdate("INSERT INTO genres(name)\n" +
+                "VALUES\n" +
+                "(\"Modern Rock\"),\n" +
+                "(\"Whitenoise\"),\n" +
+                "(\"K pop\"),\n" +
+                "(\"Folk\"),\n" +
+                "(\"Polka\")");
 
         Integer after = (Integer) executeSQL("SELECT COUNT(*) as COUNT FROM genres").get(0).get("COUNT");
         assertEquals(before + 5, after);
