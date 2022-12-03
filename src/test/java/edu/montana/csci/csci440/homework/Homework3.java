@@ -15,43 +15,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Homework3 extends DBTest {
 
-    @Test
-    /*
-     * Use a transaction to safely move milliseconds from one track to anotherls
-     *
-     * You will need to use the JDBC transaction API, outlined here:
-     *
-     *   https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
-     *
-     */
-    public void useATransactionToSafelyMoveMillisecondsFromOneTrackToAnother() throws SQLException {
+        @Test
+        /*
+         * Use a transaction to safely move 10 milliseconds from one track to another.
+         *
+         * You will need to use the JDBC transaction API, outlined here:
+         *
+         *   https://docs.oracle.com/javase/tutorial/jdbc/basics/transactions.html
+         *
+         */
+        public void useATransactionToSafelyMoveMillisecondsFromOneTrackToAnother() throws SQLException {
 
-        Track track1 = Track.find(1);
-        Long track1InitialTime = track1.getMilliseconds();
-        Track track2 = Track.find(2);
-        Long track2InitialTime = track2.getMilliseconds();
+            Track track1 = Track.find(1);
+            Long track1InitialTime = track1.getMilliseconds();
+            Track track2 = Track.find(2);
+            Long track2InitialTime = track2.getMilliseconds();
 
-        try(Connection connection = DB.connect()){
-            connection.setAutoCommit(false);
-            PreparedStatement subtract = connection.prepareStatement("TODO");
-            subtract.setLong(1, 0);
-            subtract.setLong(2, 0);
-            subtract.execute();
+            try(Connection connection = DB.connect()){
+                connection.setAutoCommit(false);
+                PreparedStatement subtract = connection.prepareStatement("UPDATE tracks set Milliseconds = (Milliseconds - ?) WHERE TrackId = ?");
+                subtract.setLong(1, 10);
+                subtract.setLong(2, 1);
+                subtract.execute();
 
-            PreparedStatement add = connection.prepareStatement("TODO");
-            subtract.setLong(1, 0);
-            subtract.setLong(2, 0);
-            subtract.execute();
+                PreparedStatement add = connection.prepareStatement("UPDATE tracks set Milliseconds = (Milliseconds + ?) WHERE TrackId = ?");
+                add.setLong(1, 10);
+                add.setLong(2, 2);
+                add.execute();
 
-            // commit with the connection
+                connection.commit();
+            }
+
+            // refresh tracks from db
+            track1 = Track.find(1);
+            track2 = Track.find(2);
+            assertEquals(track1.getMilliseconds(), track1InitialTime - 10);
+            assertEquals(track2.getMilliseconds(), track2InitialTime + 10);
         }
-
-        // refresh tracks from db
-        track1 = Track.find(1);
-        track2 = Track.find(2);
-        assertEquals(track1.getMilliseconds(), track1InitialTime - 10);
-        assertEquals(track2.getMilliseconds(), track2InitialTime + 10);
-    }
 
     @Test
     /*
