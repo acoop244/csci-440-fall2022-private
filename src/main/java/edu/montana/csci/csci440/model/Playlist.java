@@ -25,8 +25,19 @@ public class Playlist extends Model {
 
 
     public List<Track> getTracks(){
-        String query = "SELECT * FROM tracks JOIN playlist_track on tracks.TrackId = playlist_track.TrackId\n" +
-                "JOIN playlists on playlists.PlaylistId = playlist_track.PlaylistId WHERE playlists.PlaylistId = ? ORDER BY tracks.name";
+        //SELECT *, artists.Name AS ArtistName, albums.Title AS AlbumTitle\n" +
+        //                     "FROM tracks \n" +
+        //                     "JOIN albums ON tracks.AlbumId = albums.AlbumId\n" +
+        //                     "JOIN artists on albums.ArtistId = artists.ArtistId\n" +
+        //                     "WHERE TrackId=?
+        String query = "SELECT *, artists.Name AS ArtistName, albums.Title AS AlbumTitle " +
+                "FROM tracks " +
+                "JOIN playlist_track on tracks.TrackId = playlist_track.TrackId\n" +
+                "JOIN playlists on playlists.PlaylistId = playlist_track.PlaylistId " +
+                "JOIN albums ON tracks.AlbumId = albums.AlbumId\n" +
+                "JOIN artists on albums.ArtistId = artists.ArtistId\n" +
+                "WHERE playlists.PlaylistId = ? " +
+                "ORDER BY tracks.name";
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
             stmt.setLong(1, playlistId);
