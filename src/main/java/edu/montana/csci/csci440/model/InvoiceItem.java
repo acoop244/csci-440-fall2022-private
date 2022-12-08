@@ -9,6 +9,9 @@ public class InvoiceItem extends Model {
     Long trackId;
     BigDecimal unitPrice;
     Long quantity;
+    String trackName;
+    String artistName;
+    String albumName;
 
     public Track getTrack() {
         return null;
@@ -55,5 +58,29 @@ public class InvoiceItem extends Model {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public String getTrackName() {
+        return trackName;
+    }
+
+    public void setTrackName(String name) {
+        this.trackName = name;
+    }
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+    public void setAlbumName(String name) {
+        this.albumName = name;
+    }
+
+    public String getArtistName() {
+        return artistName;
+    }
+
+    public void setArtistName(String name) {
+        this.artistName = name;
     }
 }

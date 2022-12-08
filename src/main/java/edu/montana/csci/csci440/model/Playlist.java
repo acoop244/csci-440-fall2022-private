@@ -25,11 +25,6 @@ public class Playlist extends Model {
 
 
     public List<Track> getTracks(){
-        //SELECT *, artists.Name AS ArtistName, albums.Title AS AlbumTitle\n" +
-        //                     "FROM tracks \n" +
-        //                     "JOIN albums ON tracks.AlbumId = albums.AlbumId\n" +
-        //                     "JOIN artists on albums.ArtistId = artists.ArtistId\n" +
-        //                     "WHERE TrackId=?
         String query = "SELECT *, artists.Name AS ArtistName, albums.Title AS AlbumTitle " +
                 "FROM tracks " +
                 "JOIN playlist_track on tracks.TrackId = playlist_track.TrackId\n" +

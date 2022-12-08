@@ -23,7 +23,7 @@ public class Invoice extends Model {
         // new employee for insert
     }
 
-    private Invoice(ResultSet results) throws SQLException {
+    Invoice(ResultSet results) throws SQLException {
         billingAddress = results.getString("BillingAddress");
         billingState = results.getString("BillingState");
         billingCity = results.getString("BillingCity");
@@ -34,8 +34,33 @@ public class Invoice extends Model {
     }
 
     public List<InvoiceItem> getInvoiceItems(){
-        //TODO implement
-        return Collections.emptyList();
+        String query = "SELECT *, tracks.name AS TrackName, albums.Title AS AlbumName, artists.Name AS ArtistName \n" +
+                "FROM invoice_items\n" +
+                "JOIN tracks ON invoice_items.TrackId = tracks.TrackId " +
+                "JOIN albums ON tracks.AlbumId = albums.AlbumId\n" +
+                "JOIN artists ON albums.ArtistId = artists.ArtistId\n" +
+                "WHERE invoice_items.InvoiceId = ?";
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, invoiceId);
+            ResultSet results = stmt.executeQuery();
+            List<InvoiceItem> resultList = new LinkedList<>();
+            while (results.next()) {
+                InvoiceItem new_item = new InvoiceItem();
+                new_item.setInvoiceLineId(results.getLong("InvoiceLineId"));
+                new_item.setInvoiceId(results.getLong("InvoiceId"));
+                new_item.setQuantity(results.getLong("Quantity"));
+                new_item.setTrackId(results.getLong("TrackId"));
+                new_item.setUnitPrice(results.getBigDecimal("UnitPrice"));
+                new_item.setTrackName(results.getString("TrackName"));
+                new_item.setArtistName(results.getString("ArtistName"));
+                new_item.setAlbumName(results.getString("AlbumName"));
+                resultList.add(new_item);
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
     public Customer getCustomer() {
         return null;

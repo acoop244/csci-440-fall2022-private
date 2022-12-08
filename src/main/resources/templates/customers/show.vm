@@ -29,6 +29,29 @@
     </tbody>
 </table>
 
+<h4>Invoice Items</h4>
+<table>
+    <thead>
+    <tr>
+        <th>InvoiceId</th>
+        <th>InvoiceDate</th>
+        <th>BillingAddress</th>
+        <th>BillingCity</th>
+    </tr>
+    </thead>
+    <tbody>
+        #foreach( $item in $customer.Invoices )
+        <tr>
+            <td>$!item.InvoiceId</td>
+            <td>$!item.InvoiceDate</td>
+            <td>$!item.BillingAddress</td>
+            <td>$!item.BillingCity</td>
+        </tr>
+        #end
+        $web.pagingWidget($customer.Invoices)
+    </tbody>
+</table>
+
 <a href="/customers/$customer.CustomerId/edit">[Edit Customer]</a>
 <a href="/customers/$customer.CustomerId/delete">[Delete Customer]</a>
 

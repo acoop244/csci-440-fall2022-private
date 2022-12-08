@@ -1,5 +1,6 @@
 package edu.montana.csci.csci440.controller;
 
+import edu.montana.csci.csci440.model.Album;
 import edu.montana.csci.csci440.model.Artist;
 import edu.montana.csci.csci440.model.Track;
 import edu.montana.csci.csci440.util.Web;
@@ -21,6 +22,8 @@ public class TracksController {
         post("/tracks/new", (req, resp) -> {
             Track track = new Track();
             Web.putValuesInto(track, "Name", "Milliseconds", "Bytes", "UnitPrice");
+            Album album = Album.find(Long.parseLong(req.queryParams("AlbumId")));
+            track.setAlbum(album);
             if (track.create()) {
                 Web.message("Created A Track!");
                 return Web.redirect("/tracks/" + track.getTrackId());
@@ -41,7 +44,6 @@ public class TracksController {
             } else {
                 tracks = Track.all(Web.getPage(), Web.PAGE_SIZE, orderBy);
             }
-            // TODO - implement cache of count w/ Redis
             long totalTracks = Track.count();
 
             return Web.renderTemplate("templates/tracks/index.vm",

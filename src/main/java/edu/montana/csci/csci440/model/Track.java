@@ -261,7 +261,12 @@ public class Track extends Model {
 
     public static List<Track> search(int page, int count, String orderBy, String search) {
         int offset = (page - 1) * count;
-        String query = "SELECT * FROM tracks JOIN albums on tracks.AlbumId = albums.AlbumId WHERE name LIKE ? OR albums.Title LIKE ? ORDER BY " + orderBy + " LIMIT ? OFFSET ?";
+        String query = "SELECT *, artists.Name AS ArtistName, albums.Title AS AlbumTitle " +
+                "FROM tracks " +
+                "JOIN albums on tracks.AlbumId = albums.AlbumId " +
+                "JOIN artists on albums.ArtistId = artists.ArtistId " +
+                "WHERE tracks.Name LIKE ? OR albums.Title LIKE ? " +
+                "ORDER BY " + orderBy + " LIMIT ? OFFSET ?";
         search = "%" + search + "%";
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(query)) {
