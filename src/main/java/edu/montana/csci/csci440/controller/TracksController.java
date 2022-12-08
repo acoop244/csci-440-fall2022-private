@@ -53,8 +53,8 @@ public class TracksController {
                     search,
                     Web.integerOrNull("ArtistId"),
                     Web.integerOrNull("AlbumId"),
-                    Web.integerOrNull("max"),
-                    Web.integerOrNull("min"));
+                    Web.integerOrNull("max") * 1000,
+                    Web.integerOrNull("min") * 1000);
             return Web.renderTemplate("templates/tracks/search.vm",
                     "tracks", tracks);
         });

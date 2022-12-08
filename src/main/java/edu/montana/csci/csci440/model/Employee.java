@@ -31,8 +31,22 @@ public class Employee extends Model {
     }
 
     public static List<Employee.SalesSummary> getSalesSummaries() {
-        //TODO - a GROUP BY query to determine the sales (look at the invoices table), using the SalesSummary class
-        return Collections.emptyList();
+        String query = "SELECT *, count(InvoiceId) as SalesCount, sum(Total) as SalesTotal\n" +
+                "FROM employees\n" +
+                "JOIN customers ON employees.EmployeeId = customers.SupportRepId\n" +
+                "JOIN invoices ON customers.CustomerId = invoices.CustomerId\n" +
+                "GROUP BY employees.EmployeeId";
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            ResultSet results = stmt.executeQuery();
+            List<Employee.SalesSummary> resultList = new LinkedList<>();
+            while (results.next()) {
+                resultList.add(new Employee.SalesSummary(results));
+            }
+            return resultList;
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     @Override
@@ -43,6 +57,9 @@ public class Employee extends Model {
         }
         if (lastName == null || "".equals(lastName)) {
             addError("LastName can't be null!");
+        }
+        if (email == null || "".equals(email) || !email.contains("@")) {
+            addError("Email can't be null!");
         }
         return !hasErrors();
     }
@@ -151,8 +168,7 @@ public class Employee extends Model {
         }
     }
     public Employee getBoss() {
-        //TODO implement
-        return null;
+        return find(this.reportsTo);
     }
 
     public static List<Employee> all() {
@@ -160,11 +176,13 @@ public class Employee extends Model {
     }
 
     public static List<Employee> all(int page, int count) {
+        int offset = (page - 1) * count;
         try (Connection conn = DB.connect();
              PreparedStatement stmt = conn.prepareStatement(
-                     "SELECT * FROM employees LIMIT ?"
+                     "SELECT * FROM employees LIMIT ? OFFSET ?"
              )) {
             stmt.setInt(1, count);
+            stmt.setInt(2, offset);
             ResultSet results = stmt.executeQuery();
             List<Employee> resultList = new LinkedList<>();
             while (results.next()) {
@@ -177,7 +195,18 @@ public class Employee extends Model {
     }
 
     public static Employee findByEmail(String newEmailAddress) {
-        throw new UnsupportedOperationException("Implement me");
+        try (Connection conn = DB.connect();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM employees WHERE Email = ?")) {
+            stmt.setString(1, newEmailAddress);
+            ResultSet results = stmt.executeQuery();
+            if (results.next()) {
+                return new Employee(results);
+            } else {
+                return null;
+            }
+        } catch (SQLException sqlException) {
+            throw new RuntimeException(sqlException);
+        }
     }
 
     public static Employee find(long employeeId) {
@@ -200,7 +229,7 @@ public class Employee extends Model {
     }
 
     public void setReportsTo(Employee employee) {
-        // TODO implement
+        this.reportsTo = employee.getEmployeeId();
     }
 
     public static class SalesSummary {
