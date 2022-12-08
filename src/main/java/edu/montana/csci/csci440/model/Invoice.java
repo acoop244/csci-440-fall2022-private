@@ -19,6 +19,8 @@ public class Invoice extends Model {
     String billingPostalCode;
     BigDecimal total;
 
+    Date invoiceDate;
+
     public Invoice() {
         // new employee for insert
     }
@@ -31,6 +33,8 @@ public class Invoice extends Model {
         billingPostalCode = results.getString("BillingPostalCode");
         total = results.getBigDecimal("Total");
         invoiceId = results.getLong("InvoiceId");
+        invoiceDate = results.getDate("InvoiceDate");
+        System.out.println(invoiceDate);
     }
 
     public List<InvoiceItem> getInvoiceItems(){
@@ -76,6 +80,14 @@ public class Invoice extends Model {
 
     public void setBillingAddress(String billingAddress) {
         this.billingAddress = billingAddress;
+    }
+
+    public Date getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(Date date) {
+        this.invoiceDate = date;
     }
 
     public String getBillingCity() {

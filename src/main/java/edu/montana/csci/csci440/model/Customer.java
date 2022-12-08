@@ -54,6 +54,7 @@ public class Customer extends Model {
         return lastName;
     }
 
+
     public String getEmail() {
         return email;
     }
